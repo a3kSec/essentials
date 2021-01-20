@@ -13,7 +13,7 @@
 .NOTES
     Author: @a3kSec
 .LINK
-    https://github.com/a3kSec/essentials.ps1/essentials.ps1
+    https://github.com/a3kSec/essentials.ps1
 #>
 
 param(
