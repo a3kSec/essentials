@@ -15,7 +15,9 @@ Brave Browser Nightly BraveSoftware.BraveBrowser-Nightly latest     Tag: Chrome
 Brave Browser         BraveSoftware.BraveBrowser         1.18.77    Tag: Chrome
 webview2 evergreen    microsoft.webview2-evergreen       1.3.139.59 Tag: chrome
 Google Chrome Beta    Google.ChromeBeta                  latest
-Google Chrome         Google.Chrome                      latest                <------------ 'Google.Chrome' is the app id for Chrome browser
+Google Chrome         Google.Chrome                      latest
+
+'Google.Chrome' is the app id for Chrome browser
 ```
 
 - If you get an error about winget, run the script once to install it.
