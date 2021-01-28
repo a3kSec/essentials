@@ -21,7 +21,7 @@ Google Chrome         Google.Chrome                      latest                <
 - If you get an error about winget, run the script once to install it.
 
 ### Download zip
-- Download [a essentials.zip](https://github.com/a3kSec/essentials/archive/1.0.zip) and extract.
+- Download [essentials.zip](https://github.com/a3kSec/essentials/archive/1.0.zip) and extract.
 - Find the powershell script, right click and click run with powershell.
 - When it prompts for the file path, give it the path of where your app id list is located (a default list called app_ids.txt has been included)
 ```
