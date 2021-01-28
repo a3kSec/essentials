@@ -116,10 +116,6 @@ function main () {
         
         if ($answer) {
             InstallWinget $url $outfile
-            
-            if (Get-Command winget.exe) {
-                InstallApps $FilePath
-            }
         }
     }
     finally {
