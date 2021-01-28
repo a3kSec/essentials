@@ -9,11 +9,11 @@
 .PARAMETER FilePath
     Path to where you saved your list of app ids
 .EXAMPLE
-    PS C:\Scripts> .\essentials.ps1 -FilePath C:\Scripts\app_ids.txt
+    PS C:\scripts\essentials> .\essentials.ps1 -FilePath C:\scripts\essentials\app_ids.txt
 .NOTES
     Author: @a3kSec
 .LINK
-    https://github.com/a3kSec/essentials.ps1
+    https://github.com/a3kSec/essentials
 #>
 
 param(
