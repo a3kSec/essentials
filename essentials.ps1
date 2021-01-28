@@ -9,7 +9,7 @@
 .PARAMETER FilePath
     Path to where you saved your list of app ids
 .EXAMPLE
-    PS C:\Scripts> .\essentials.ps1 -FilePath C:\Scripts\{FILENAME}.txt
+    PS C:\Scripts> .\essentials.ps1 -FilePath C:\Scripts\app_ids.txt
 .NOTES
     Author: @a3kSec
 .LINK
@@ -46,17 +46,16 @@ function InstallWinget ($url, $outfile) {
         $net.DownloadFile($url,$outfile)
         Write-Host "Installing winget" -ForegroundColor Yellow
         Add-AppxPackage $outfile
-        Write-Host "winget installed. Rerun script to install apps that you specified in your preferred app_id file." -ForegroundColor Green
+        Write-Host "winget installed successfully" -ForegroundColor Green
         Remove-Item -Path $outfile
     }
     catch{
-        Write-Host "Error downloading file. Rerun script." -ForegroundColor Red
-        exit 1
+        Write-Host "Error downloading file, check your network connection." -ForegroundColor Red
     }
 }
 
 function SanitizeAppID ($string) {
-    $sanitized = $string -replace '[^a-zA-Z0-9\.]',''
+    $sanitized = $string -replace "[^a-zA-Z0-9\.]",""
     $sanitized.Trim("."," ")
 }
 
@@ -72,39 +71,60 @@ function InstallApps ($filepath) {
     }
 }
 
-if (WindowsNeedsToUpdate) {
-    $question = Read-Host "Windows is not the latest version, would you like to update?(yes/no)"
 
-    $answer = switch ($question) {
-        'yes'   { $true }
-        'y'   { $true }
-        'no'    { $false }
-        'n'    { $false }
-        default {Write-Host 'Not updating windows.' -ForegroundColor Red}
+function main () {
+    if (WindowsNeedsToUpdate) {
+        $question = Read-Host "Windows is not the latest version, would you like to update?(yes/no)"
+
+        $answer = switch ($question) {
+            "yes"   { $true }
+            "y"   { $true }
+            "no"    { $false }
+            "n"    { $false }
+            default {Write-Host "Not updating windows." -ForegroundColor Red}
+        }
+        if ($answer) {
+            UpdateWindows
+        }
     }
-    if ($answer) {
-        UpdateWindows
+
+    $oldPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'stop'
+
+    try {
+        if (Get-Command winget.exe) {
+            InstallApps $FilePath
+        }
+    }
+    catch {
+        "`n"
+        Write-Host 'winget is not installed...' -ForegroundColor Red
+        "`n"
+        Write-Host 'winget is required to continue.' -ForegroundColor Red
+        "`n"
+        $url = "https://github.com/microsoft/winget-cli/releases/download/v0.2.2941-preview/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.appxbundle"
+        $outfile = "$PSScriptRoot/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.appxbundle"
+        $question = Read-Host "winget is required, would you like to install?(yes/no)"
+        
+        $answer = switch ($question) {
+            'yes'   { $true }
+            'y'   { $true }
+            'no'    { $false }
+            'n' { $false }
+            default {Write-Host 'winget is required to continue.' -ForegroundColor Red}
+        }
+        
+        if ($answer) {
+            InstallWinget $url $outfile
+            
+            if (Get-Command winget.exe) {
+                InstallApps $FilePath
+            }
+        }
+    }
+    finally {
+        $ErrorActionPreference = $oldPreference
     }
 }
 
-if (Get-Command winget.exe) {
-    InstallApps $FilePath
-}
-else
-{
-    $url = "https://github.com/microsoft/winget-cli/releases/download/v0.2.2941-preview/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.appxbundle"
-    $outfile = "$PSScriptRoot/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.appxbundle"
-    $question = Read-Host "winget is required, would you like to install?(yes/no)"
-    
-    $answer = switch ($question) {
-        'yes'   { $true }
-        'y'   { $true }
-        'no'    { $false }
-        'n'    { $false }
-        default {Write-Host 'winget is required to continue.' -ForegroundColor Red}
-    }
-    
-    if ($answer) {
-        InstallWinget $url $outfile
-    }
-}
+main
